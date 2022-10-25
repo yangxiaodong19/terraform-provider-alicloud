@@ -1,4 +1,4 @@
-## 1.189.0 (Unreleased)
+## 1.190.0 (Unreleased)
 ## 1.188.0 (October 15, 2022)
 
 - **New Resource:** `alicloud_message_service_queue` ([#5444](https://github.com/aliyun/terraform-provider-alicloud/issues/5444))
