@@ -159,7 +159,6 @@ func resourceAlicloudDBBackupPolicy() *schema.Resource {
 				Optional:         true,
 				DiffSuppressFunc: enableBackupLogDiffSuppressFunc,
 			},
-
 			"archive_backup_keep_policy": {
 				Type:             schema.TypeString,
 				ValidateFunc:     validation.StringInSlice([]string{"ByMonth", "ByWeek", "KeepAll"}, false),
