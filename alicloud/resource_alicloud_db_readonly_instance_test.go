@@ -54,7 +54,7 @@ func TestAccAlicloudRdsDBReadonlyInstance_update(t *testing.T) {
 					"master_db_instance_id": "${alicloud_db_instance.default.id}",
 					"zone_id":               "${alicloud_db_instance.default.zone_id}",
 					"engine_version":        "${alicloud_db_instance.default.engine_version}",
-					"instance_type":         "${data.alicloud_db_instance_classes.read.instance_classes.23.instance_class}",
+					"instance_type":         "${data.alicloud_db_instance_classes.read.instance_classes.42.instance_class}",
 					"instance_storage":      "${alicloud_db_instance.default.instance_storage}",
 					"instance_name":         "${var.name}",
 					"vswitch_id":            "${local.vswitch_id}",
@@ -74,7 +74,7 @@ func TestAccAlicloudRdsDBReadonlyInstance_update(t *testing.T) {
 			// upgrade storage
 			{
 				Config: testAccConfig(map[string]interface{}{
-					"instance_storage": "${alicloud_db_instance.default.instance_storage + data.alicloud_db_instance_classes.read.instance_classes.23.storage_range.step}",
+					"instance_storage": "${alicloud_db_instance.default.instance_storage + data.alicloud_db_instance_classes.read.instance_classes.42.storage_range.step}",
 				}),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheck(map[string]string{"instance_storage": CHECKSET}),
@@ -83,7 +83,7 @@ func TestAccAlicloudRdsDBReadonlyInstance_update(t *testing.T) {
 			// upgrade instanceType
 			{
 				Config: testAccConfig(map[string]interface{}{
-					"instance_type": "${data.alicloud_db_instance_classes.read.instance_classes.24.instance_class}",
+					"instance_type": "${data.alicloud_db_instance_classes.read.instance_classes.43.instance_class}",
 				}),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheck(map[string]string{"instance_type": CHECKSET}),
@@ -131,8 +131,8 @@ func TestAccAlicloudRdsDBReadonlyInstance_update(t *testing.T) {
 					"master_db_instance_id": "${alicloud_db_instance.default.id}",
 					"zone_id":               "${alicloud_db_instance.default.zone_id}",
 					"engine_version":        "${alicloud_db_instance.default.engine_version}",
-					"instance_type":         "${data.alicloud_db_instance_classes.read.instance_classes.0.instance_class}",
-					"instance_storage":      "${alicloud_db_instance.default.instance_storage + 2*data.alicloud_db_instance_classes.read.instance_classes.23.storage_range.step}",
+					"instance_type":         "${data.alicloud_db_instance_classes.read.instance_classes.42.instance_class}",
+					"instance_storage":      "${alicloud_db_instance.default.instance_storage + 2*data.alicloud_db_instance_classes.read.instance_classes.42.storage_range.step}",
 					"instance_name":         "${var.name}",
 					"vswitch_id":            "${local.vswitch_id}",
 				}),
@@ -397,7 +397,7 @@ data "alicloud_db_zones" "default"{
 }
 
 data "alicloud_db_instance_classes" "default" {
-    zone_id = data.alicloud_db_zones.default.zones.0.id
+    zone_id = data.alicloud_db_zones.default.zones.2.id
 	engine = "MySQL"
 	engine_version = "8.0"
     category = "HighAvailability"
@@ -409,14 +409,14 @@ data "alicloud_vpcs" "default" {
 }
 data "alicloud_vswitches" "default" {
   vpc_id = data.alicloud_vpcs.default.ids.0
-  zone_id = data.alicloud_db_zones.default.zones.0.id
+  zone_id = data.alicloud_db_zones.default.zones.2.id
 }
 
 resource "alicloud_vswitch" "this" {
  count = length(data.alicloud_vswitches.default.ids) > 0 ? 0 : 1
  vswitch_name = var.name
  vpc_id = data.alicloud_vpcs.default.ids.0
- zone_id = data.alicloud_db_zones.default.ids.0
+ zone_id = data.alicloud_db_zones.default.zones.2.id
  cidr_block = cidrsubnet(data.alicloud_vpcs.default.vpcs.0.cidr_block, 8, 4)
 }
 locals {
@@ -432,8 +432,8 @@ resource "alicloud_db_instance" "default" {
     engine = "MySQL"
 	engine_version = "8.0"
  	db_instance_storage_type = "cloud_essd"
-	instance_type = data.alicloud_db_instance_classes.default.instance_classes.0.instance_class
-	instance_storage = data.alicloud_db_instance_classes.default.instance_classes.0.storage_range.min
+	instance_type = data.alicloud_db_instance_classes.default.instance_classes.28.instance_class
+	instance_storage = data.alicloud_db_instance_classes.default.instance_classes.28.storage_range.min
 	vswitch_id = local.vswitch_id
 	instance_name = var.name
 	security_ips = ["10.168.1.12", "100.69.7.112"]
@@ -441,7 +441,7 @@ resource "alicloud_db_instance" "default" {
 
 data "alicloud_db_instance_classes" "read" {
     db_instance_id = alicloud_db_instance.default.id 
-    zone_id = data.alicloud_db_zones.default.zones.0.id
+    zone_id = data.alicloud_db_zones.default.zones.2.id
 	engine = "MySQL"
 	engine_version = "8.0"
     category = "HighAvailability"
